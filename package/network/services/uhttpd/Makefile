@@ -107,6 +107,7 @@ define Package/uhttpd/conffiles
 /etc/uhttpd.key
 endef
 
+TARGET_CFLAGS += -D_FILE_OFFSET_BITS=64
 TARGET_LDFLAGS += -lcrypt
 
 CMAKE_OPTIONS = -DTLS_SUPPORT=on

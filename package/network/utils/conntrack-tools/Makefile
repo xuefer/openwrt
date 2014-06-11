@@ -27,6 +27,7 @@ PKG_INSTALL:=1
 TAR_OPTIONS += --exclude='*.rej'
 
 include $(INCLUDE_DIR)/package.mk
+PKG_UNPACK += && rm -f $(PKG_BUILD_DIR)/doc/sync/alarm/conntrackd.conf.rej
 
 define Package/conntrack-tools
   SECTION:=net

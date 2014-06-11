@@ -156,7 +156,7 @@ config_list_foreach() {
 insert_modules() {
 	[ -d /etc/modules.d ] && {
 		cd /etc/modules.d
-		sed 's/^[^#]/insmod &/' $* | ash 2>&- || :
+		sed 's,^[^#].*,echo "Loading module & ..." >/dev/tty1; insmod &,' $* | ash 2>&- || :
 	}
 }
 

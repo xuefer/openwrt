@@ -745,6 +745,7 @@ define KernelPackage/zram
   TITLE:=ZRAM
   DEPENDS:=@!LINUX_3_3 +kmod-lib-lzo
   KCONFIG:= \
+	CONFIG_SWAP=y \
 	CONFIG_ZSMALLOC \
 	CONFIG_ZRAM \
 	CONFIG_ZRAM_DEBUG=n \

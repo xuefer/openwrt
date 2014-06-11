@@ -26,6 +26,13 @@ define Package/librpc
   TITLE:=uClibc RPC library
 endef
 
+ifeq ($(USE_EGLIBC),)
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	rm -f $(PKG_BUILD_DIR)/rpc/netdb.h
+endef
+endif
+
 define Package/librpc/install
 	$(INSTALL_DIR) $(1)/lib/
 	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/librpc.so $(1)/lib/

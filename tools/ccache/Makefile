@@ -25,7 +25,12 @@ define Host/Install/ccache
 endef
 
 ifneq ($(strip $(shell which ccache >/dev/null && echo found)),found)
-  define Host/Clean
+  define Host/Install/Impl
+	$(MAKE) -C $(HOST_BUILD_DIR) install
+	$(call Host/Install/Default)
+  endef
+
+  define Host/Clean/Impl
 	-$(MAKE) -C $(HOST_BUILD_DIR) uninstall
 	$(call Host/Clean/Default)
   endef
@@ -40,13 +45,25 @@ else
   endef
   define Host/Compile
   endef
-  define Host/Install
+  define Host/Install/Impl
 	$(call Host/Install/ccache)
   endef
-  define Host/Clean
+  define Host/Clean/Impl
   endef
   define Download
   endef
 endif
+
+define Host/Install
+  $(call Host/Install/Impl)
+	@mkdir -p $(STAGING_DIR)/ccache/bin/
+	@CCACHE=`which ccache`; for name in c++ cc g++ gcc $(TARGET_CXX) $(TARGET_CC); do \
+	  $(LN) "$$$$CCACHE" $(STAGING_DIR)/ccache/bin/$$$$name; \
+	done
+endef
+define Host/Clean
+  $(call Host/Clean/Impl)
+	@rm -rf $(STAGING_DIR)/ccache/bin/
+endef
 
 $(eval $(call HostBuild))
