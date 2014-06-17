@@ -297,7 +297,7 @@ $(eval $(call KernelPackage,sound-soc-gw_avila))
 
 
 define KernelPackage/pcspkr
-  DEPENDS:=@TARGET_x86
+  DEPENDS:=@TARGET_x86||TARGET_x86_64
   TITLE:=PC speaker support
   KCONFIG:= \
 	CONFIG_INPUT_PCSPKR \
