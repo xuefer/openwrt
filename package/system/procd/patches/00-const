@@ -286,10 +286,6 @@ index 2dbed51..a563c52 100644
  
  	argv[1] = path;
  
-diff --git a/upgraded/upgraded b/upgraded/upgraded
-deleted file mode 100755
-index a78470c..0000000
-Binary files a/upgraded/upgraded and /dev/null differ
 diff --git a/upgraded/upgraded.c b/upgraded/upgraded.c
 index 1e4057a..fde23f7 100644
 --- a/upgraded/upgraded.c
