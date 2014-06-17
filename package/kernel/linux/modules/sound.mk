@@ -167,12 +167,12 @@ endef
 $(eval $(call KernelPackage,sound-cs5535audio))
 
 define KernelPackage/sound-maestro3
-  SUBMENU:=$(SOUND_MENU)
   TITLE:=ESS Maestro3/Allegro/Canyon3D-2
-  DEPENDS:=kmod-sound-core kmod-ac97
+  DEPENDS:=+kmod-sound-core kmod-ac97
   KCONFIG:=CONFIG_SND_MAESTRO3 CONFIG_SND_MAESTRO3_INPUT=y
-  FILES:=$(LINUX_DIR)/sound/pci/snd-maestro3.$(LINUX_KMOD_SUFFIX) 
+  FILES:=$(LINUX_DIR)/sound/pci/snd-maestro3.ko
   AUTOLOAD:=$(call AutoLoad,35, snd-maestro3)
+  $(call AddDepends/sound)
 endef
 
 define KernelPackage/sound-maestro3/description
@@ -182,12 +182,12 @@ endef
 $(eval $(call KernelPackage,sound-maestro3))
 
 define KernelPackage/sound-dummy
-  SUBMENU:=$(SOUND_MENU)
   TITLE:=Dummy (/dev/null) soundcard
   DEPENDS:=kmod-sound-core
   KCONFIG:=CONFIG_SND_DUMMY
-  FILES:=$(LINUX_DIR)/sound/drivers/snd-dummy.$(LINUX_KMOD_SUFFIX) 
+  FILES:=$(LINUX_DIR)/sound/drivers/snd-dummy.ko
   AUTOLOAD:=$(call AutoLoad,35, snd-dummy)
+  $(call AddDepends/sound)
 endef
 
 define KernelPackage/sound-dummy/description
