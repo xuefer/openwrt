@@ -1,5 +1,18 @@
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index dc7ecd6..3ab5228 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -1,7 +1,7 @@
+ cmake_minimum_required(VERSION 2.6)
+ 
+ PROJECT(procd C)
+-ADD_DEFINITIONS(-Os -ggdb -Wall -Werror --std=gnu99 -Wmissing-declarations)
++ADD_DEFINITIONS(-Os -ggdb -Wall -Werror --std=gnu99 -Wmissing-declarations -Wwrite-strings)
+ 
+ SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+ 
 diff --git a/initd/init.c b/initd/init.c
-index d458f29..80c30f2 100644
+index 153b3c2..5ff6e63 100644
 --- a/initd/init.c
 +++ b/initd/init.c
 @@ -88,7 +88,9 @@ main(int argc, char **argv)
@@ -68,10 +81,10 @@ index fb94527..8bae89b 100644
  	LOG("- preinit -\n");
  
 diff --git a/inittab.c b/inittab.c
-index e935ece..5a912b3 100644
+index 677ec47..cf0e5a2 100644
 --- a/inittab.c
 +++ b/inittab.c
-@@ -58,7 +58,7 @@ struct init_action {
+@@ -59,7 +59,7 @@ struct init_action {
  };
  
  static const char *tab = "/etc/inittab";
@@ -95,7 +108,7 @@ index 466b759..1a555a8 100644
  	umount2("/dev/pts", MNT_DETACH);
  	umount2("/dev/", MNT_DETACH);
 diff --git a/plug/hotplug.c b/plug/hotplug.c
-index ca1e823..2644bd8 100644
+index 075062b..bab2326 100644
 --- a/plug/hotplug.c
 +++ b/plug/hotplug.c
 @@ -237,7 +237,7 @@ static void handle_firmware(struct blob_attr *msg, struct blob_attr *data)
@@ -107,7 +120,7 @@ index ca1e823..2644bd8 100644
  	int atomic;
  	void (*handler)(struct blob_attr *msg, struct blob_attr *data);
  } handlers[] = {
-@@ -438,7 +438,7 @@ void hotplug_last_event(uloop_timeout_handler handler)
+@@ -450,7 +450,7 @@ void hotplug_last_event(uloop_timeout_handler handler)
  		uloop_timeout_cancel(&last_event);
  }
  
@@ -115,8 +128,8 @@ index ca1e823..2644bd8 100644
 +void hotplug(const char *rules)
  {
  	struct sockaddr_nl nls;
- 
-@@ -462,7 +462,7 @@ void hotplug(char *rules)
+ 	int nlbufsize = 512 * 1024;
+@@ -480,7 +480,7 @@ void hotplug(char *rules)
  	uloop_fd_add(&hotplug_fd, ULOOP_READ);
  }
  
@@ -141,10 +154,10 @@ index 2a44442..27fc08b 100644
  void hotplug_last_event(uloop_timeout_handler handler);
  
 diff --git a/rcS.c b/rcS.c
-index 395d992..cef0d78 100644
+index 0e1b0ba..186c955 100644
 --- a/rcS.c
 +++ b/rcS.c
-@@ -102,7 +102,7 @@ static void q_initd_complete(struct runqueue *q, struct runqueue_task *p)
+@@ -101,7 +101,7 @@ static void q_initd_complete(struct runqueue *q, struct runqueue_task *p)
  	free(s);
  }
  
@@ -153,7 +166,7 @@ index 395d992..cef0d78 100644
  {
  	static const struct runqueue_task_type initd_type = {
  		.run = q_initd_run,
-@@ -122,7 +122,7 @@ static void add_initd(struct runqueue *q, char *file, char *param)
+@@ -123,7 +123,7 @@ static void add_initd(struct runqueue *q, char *file, char *param)
  	runqueue_task_add(q, &s->proc.task, false);
  }
  
@@ -162,7 +175,7 @@ index 395d992..cef0d78 100644
  {
  	char *dir = alloca(2 + strlen(path) + strlen(file) + strlen(pattern));
  	glob_t gl;
-@@ -143,7 +143,7 @@ static int _rc(struct runqueue *q, char *path, const char *file, char *pattern,
+@@ -144,7 +144,7 @@ static int _rc(struct runqueue *q, char *path, const char *file, char *pattern,
  	return 0;
  }
  
@@ -171,7 +184,7 @@ index 395d992..cef0d78 100644
  {
  	runqueue_init(&q);
  	q.empty_cb = q_empty;
-@@ -152,7 +152,7 @@ int rcS(char *pattern, char *param, void (*q_empty)(struct runqueue *))
+@@ -153,7 +153,7 @@ int rcS(char *pattern, char *param, void (*q_empty)(struct runqueue *))
  	return _rc(&q, "/etc/rc.d", pattern, "*", param);
  }
  
@@ -195,10 +208,10 @@ index 91d37d1..9b6bb84 100644
  
  #endif
 diff --git a/service/service.c b/service/service.c
-index 3ec24c3..6aa6578 100644
+index 74feded..32bcdf7 100644
 --- a/service/service.c
 +++ b/service/service.c
-@@ -429,17 +429,19 @@ static struct ubus_object main_object = {
+@@ -424,17 +424,19 @@ static struct ubus_object main_object = {
  };
  
  int
@@ -221,7 +234,7 @@ index 3ec24c3..6aa6578 100644
  		blobmsg_add_string(&b, NULL, t);
  		t = strtok(NULL, " ");
 diff --git a/service/service.h b/service/service.h
-index 46ba746..a911099 100644
+index 892a147..28ffc1c 100644
 --- a/service/service.h
 +++ b/service/service.h
 @@ -49,7 +49,7 @@ struct service {
@@ -234,7 +247,7 @@ index 46ba746..a911099 100644
  void service_validate_init(void);
  void service_init(void);
 diff --git a/service/trigger.c b/service/trigger.c
-index 41fb55d..f96e004 100644
+index ced758b..90e64cc 100644
 --- a/service/trigger.c
 +++ b/service/trigger.c
 @@ -52,7 +52,7 @@ struct trigger {
@@ -259,3 +272,36 @@ index 74cabcb..d0d4b6e 100644
  
  	switch(signal) {
  	case SIGTERM:
+diff --git a/system.c b/system.c
+index 2dbed51..a563c52 100644
+--- a/system.c
++++ b/system.c
+@@ -299,7 +299,8 @@ static void
+ procd_spawn_upgraded(char *path)
+ {
+ 	char *wdt_fd = watchdog_fd();
+-	char *argv[] = { "/tmp/upgraded", NULL, NULL};
++	char arg0[] = "/tmp/upgraded";
++	char *argv[] = { arg0, NULL, NULL};
+ 
+ 	argv[1] = path;
+ 
+diff --git a/upgraded/upgraded b/upgraded/upgraded
+deleted file mode 100755
+index a78470c..0000000
+Binary files a/upgraded/upgraded and /dev/null differ
+diff --git a/upgraded/upgraded.c b/upgraded/upgraded.c
+index 1e4057a..fde23f7 100644
+--- a/upgraded/upgraded.c
++++ b/upgraded/upgraded.c
+@@ -35,7 +35,9 @@ static void upgrade_proc_cb(struct uloop_process *proc, int ret)
+ 
+ static void sysupgarde(char *folder)
+ {
+-	char *args[] = { "/sbin/sysupgrade", "nand", NULL, NULL };
++	char arg0[] = "/sbin/sysupgrade";
++	char arg1[] = "nand";
++	char *args[] = { arg0, arg1, NULL, NULL };
+ 
+ 	args[2] = folder;
+ 	upgrade_proc.cb = upgrade_proc_cb;
