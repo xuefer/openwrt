@@ -214,7 +214,3 @@ endif
 endef
 
 $(eval $(call BuildImage))
-
-$(eval $(call RequireCommand,qemu-img, \
-	Please install qemu-img (package qemu-utils in Ubuntu/Debian). \
-))
