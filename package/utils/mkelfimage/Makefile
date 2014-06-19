@@ -20,8 +20,8 @@ define Package/mkelfimage
   CATEGORY:=Base system
   TITLE:=mkelfimage
   HIDDEN:=1
-  DEPENDS:=@i386
-  DEFAULT:=y if TARGET_x86
+  DEPENDS:=@i386||x86_64
+  DEFAULT:=y if TARGET_x86||TARGET_x86_64
 endef
 
 CONFIGURE_VARS += AS="$(TARGET_CROSS)as"
