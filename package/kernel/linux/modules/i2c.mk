@@ -191,6 +191,22 @@ endef
 $(eval $(call KernelPackage,i2c-piix4))
 
 
+I2C_I801_MODULES:= \
+  CONFIG_I2C_I801:drivers/i2c/busses/i2c-i801
+
+define KernelPackage/i2c-i801
+  $(call i2c_defaults,$(I2C_I801_MODULES),59)
+  TITLE:=Intel 82801 (ICH/PCH)
+  DEPENDS:=@TARGET_i386||TARGET_x86_64 kmod-i2c-core +kmod-usb-core
+endef
+
+define KernelPackage/i2c-i801/description
+ Kernel module for the I2C Intel 801 family of mainboard I2C interfaces
+endef
+
+$(eval $(call KernelPackage,i2c-i801))
+
+
 I2C_MUX_MODULES:= \
   CONFIG_I2C_MUX:drivers/i2c/i2c-mux
 
