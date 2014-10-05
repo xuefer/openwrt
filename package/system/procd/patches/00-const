@@ -276,6 +276,16 @@ diff --git a/system.c b/system.c
 index 2dbed51..a563c52 100644
 --- a/system.c
 +++ b/system.c
+@@ -38,7 +38,8 @@
+ {
+ 	void *c;
+ 	char line[256];
+-	char *key, *val, *next;
++	const char *key;
++	char *val, *next;
+ 	struct utsname utsname;
+ 	FILE *f;
+ 
 @@ -299,7 +299,8 @@ static void
  procd_spawn_upgraded(char *path)
  {
