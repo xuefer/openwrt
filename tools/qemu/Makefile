@@ -21,6 +21,9 @@ HOST_LDFLAGS += $(HOST_STATIC_LINKING)
 
 define Host/Configure
 	(cd $(HOST_BUILD_DIR); \
+		PKG_CONFIG=/usr/bin/pkg-config \
+		PKG_CONFIG_LIBDIR=/usr/lib/pkgconfig:/usr/share/pkgconfig \
+		PKG_CONFIG_PATH=/usr/lib/pkgconfig:/usr/share/pkgconfig \
 		CFLAGS="$(HOST_CFLAGS)" \
 		LDFLAGS="$(HOST_LDFLAGS)" \
 		$(HOST_CONFIGURE_CMD) \
