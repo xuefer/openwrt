@@ -1,0 +1,72 @@
+--- a/ifenslave.c
++++ b/ifenslave.c
+@@ -260,7 +260,7 @@
+ 		case 'V': opt_V++; exclusive++; break;
+ 
+ 		case '?':
+-			fprintf(stderr, usage_msg);
++			fprintf(stderr, "%s", usage_msg);
+ 			res = 2;
+ 			goto out;
+ 		}
+@@ -268,13 +268,13 @@
+ 
+ 	/* options check */
+ 	if (exclusive > 1) {
+-		fprintf(stderr, usage_msg);
++		fprintf(stderr, "%s", usage_msg);
+ 		res = 2;
+ 		goto out;
+ 	}
+ 
+ 	if (opt_v || opt_V) {
+-		printf(version);
++		printf("%s", version);
+ 		if (opt_V) {
+ 			res = 0;
+ 			goto out;
+@@ -282,14 +282,14 @@
+ 	}
+ 
+ 	if (opt_u) {
+-		printf(usage_msg);
++		printf("%s", usage_msg);
+ 		res = 0;
+ 		goto out;
+ 	}
+ 
+ 	if (opt_h) {
+-		printf(usage_msg);
+-		printf(help_msg);
++		printf("%s", usage_msg);
++		printf("%s", help_msg);
+ 		res = 0;
+ 		goto out;
+ 	}
+@@ -309,7 +309,7 @@
+ 			goto out;
+ 		} else {
+ 			/* Just show usage */
+-			fprintf(stderr, usage_msg);
++			fprintf(stderr, "%s", usage_msg);
+ 			res = 2;
+ 			goto out;
+ 		}
+@@ -320,7 +320,7 @@
+ 	master_ifname = *spp++;
+ 
+ 	if (master_ifname == NULL) {
+-		fprintf(stderr, usage_msg);
++		fprintf(stderr, "%s", usage_msg);
+ 		res = 2;
+ 		goto out;
+ 	}
+@@ -339,7 +339,7 @@
+ 
+ 	if (slave_ifname == NULL) {
+ 		if (opt_d || opt_c) {
+-			fprintf(stderr, usage_msg);
++			fprintf(stderr, "%s", usage_msg);
+ 			res = 2;
+ 			goto out;
+ 		}
