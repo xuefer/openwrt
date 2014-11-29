@@ -141,7 +141,7 @@ define Package/samba36-server/install
 endef
 
 
-define Package/dnsmasq/conffiles
+define Package/samba36-server/conffiles
 /etc/config/samba
 /etc/samba/smb.conf.template
 endef
