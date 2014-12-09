@@ -67,6 +67,12 @@ $(call Package/e2fsprogs)
   DEPENDS:= +e2fsprogs
 endef
 
+define Package/e4defrag
+$(call Package/e2fsprogs)
+  TITLE:=Ext2 Filesystem e4defrag utility
+  DEPENDS:= +e2fsprogs
+endef
+
 TARGET_CFLAGS += $(FPIC) -ffunction-sections -fdata-sections -D_FILE_OFFSET_BITS=64
 
 CONFIGURE_VARS += \
@@ -163,8 +169,14 @@ define Package/badblocks/install
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/badblocks $(1)/usr/sbin/
 endef
 
+define Package/e4defrag/install
+	$(INSTALL_DIR) $(1)/usr/sbin
+	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/e4defrag $(1)/usr/sbin/
+endef
+
 $(eval $(call BuildPackage,e2fsprogs))
 $(eval $(call BuildPackage,libext2fs))
 $(eval $(call BuildPackage,tune2fs))
 $(eval $(call BuildPackage,resize2fs))
 $(eval $(call BuildPackage,badblocks))
+$(eval $(call BuildPackage,e4defrag))
