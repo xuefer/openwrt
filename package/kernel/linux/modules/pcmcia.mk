@@ -38,7 +38,10 @@ endef
 
 define KernelPackage/pcmcia-rsrc
   TITLE:=PCMCIA resource support
-  KCONFIG:=CONFIG_PCCARD_NONSTATIC=y
+  KCONFIG:=CONFIG_PCCARD_NONSTATIC=y \
+	CONFIG_PCI \
+	CONFIG_PCMCIA \
+	CONFIG_CARDBUS
   FILES:=$(LINUX_DIR)/drivers/pcmcia/pcmcia_rsrc.ko
   AUTOLOAD:=$(call AutoLoad,26,pcmcia_rsrc)
   $(call AddDepends/pcmcia)
