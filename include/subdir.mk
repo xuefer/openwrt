@@ -23,7 +23,7 @@ define subtarget
 endef
 
 define ERROR
-	($(call MESSAGE, $(2)); $(if $(BUILD_LOG), echo "$(2)" >> $(BUILD_LOG_DIR)/$(1)/error.txt))
+	($(call MESSAGE, $(2)); $(if $(BUILD_LOG), echo "$(2)" | tee -a $(BUILD_LOG_DIR)/all.log >> $(BUILD_LOG_DIR)/$(1)/error.txt))
 endef
 
 lastdir=$(word $(words $(subst /, ,$(1))),$(subst /, ,$(1)))
@@ -44,7 +44,7 @@ log_make = \
 		set -o pipefail; \
 		mkdir -p $(BUILD_LOG_DIR)/$(1)$(if $(4),/$(4));) \
 	$$(SUBMAKE) $(subdir_make_opts) $(if $(3),$(3)-)$(2) \
-		$(if $(BUILD_LOG),SILENT= 2>&1 | tee $(BUILD_LOG_DIR)/$(1)$(if $(4),/$(4))/$(if $(3),$(3)-)$(2).txt)
+		$(if $(BUILD_LOG),SILENT= 2>&1 | tee -a $(BUILD_LOG_DIR)/all.log | tee $(BUILD_LOG_DIR)/$(1)$(if $(4),/$(4))/$(if $(3),$(3)-)$(2).txt)
 
 ifdef CONFIG_AUTOREMOVE
 rebuild_check = \
