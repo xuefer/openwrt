@@ -200,7 +200,7 @@ $(eval $(call KernelPackage,sound-maestro3))
 
 
 define KernelPackage/hda
-  TITLE:=Intel HD Audio
+  TITLE:=HD Audio common driver
   KCONFIG:= \
     CONFIG_SND_HDA \
     CONFIG_SND_HDA_RECONFIG=y
