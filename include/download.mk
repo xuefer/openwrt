@@ -158,16 +158,23 @@ endef
 define DownloadMethod/git
 	$(call wrap_mirror,$(1),$(2), \
 		echo "Checking out files from the git repository..."; \
+		mkdir -p $(DL_DIR)/git && \
 		mkdir -p $(TMP_DIR)/dl && \
 		cd $(TMP_DIR)/dl && \
 		rm -rf $(SUBDIR) && \
 		[ \! -d $(SUBDIR) ] && \
-		git clone $(OPTS) $(URL) $(SUBDIR) && \
-		(cd $(SUBDIR) && git checkout $(VERSION) && \
-		git submodule update --init --recursive) && \
+		(if [ \! -d $(DL_DIR)/git/`basename $(URL)` ]; then \
+			git clone $(OPTS) $(URL) $(SUBDIR) && \
+			--separate-git-dir=$(DL_DIR)/git/`basename $(URL)` --progress; \
+		else \
+			mkdir $(SUBDIR) && \
+			echo 'gitdir: '$(DL_DIR)/git/`basename $(URL)` > $(SUBDIR)/.git && \
+			git -C $(DL_DIR)/git/`basename $(URL)` fetch --progress; \
+		fi) && \
+		(cd $(SUBDIR) && git checkout $(VERSION) . && git submodule update --init --recursive) && \
 		echo "Packing checkout..." && \
 		export TAR_TIMESTAMP=`cd $(SUBDIR) && git log -1 --format='@%ct'` && \
-		rm -rf $(SUBDIR)/.git && \
+		rm -f $(SUBDIR)/.git && \
 		$(call dl_tar_pack,$(TMP_DIR)/dl/$(FILE),$(SUBDIR)) && \
 		mv $(TMP_DIR)/dl/$(FILE) $(DL_DIR)/ && \
 		rm -rf $(SUBDIR); \
