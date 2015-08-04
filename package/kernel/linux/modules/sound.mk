@@ -203,6 +203,7 @@ define KernelPackage/hda
   TITLE:=HD Audio common driver
   KCONFIG:= \
     CONFIG_SND_HDA \
+    CONFIG_SND_HDA_HWDEP=y \
     CONFIG_SND_HDA_RECONFIG=y
   FILES:= \
     $(LINUX_DIR)/sound/pci/hda/snd-hda-codec.ko
