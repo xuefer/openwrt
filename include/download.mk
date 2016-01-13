@@ -167,6 +167,7 @@ define DownloadMethod/git
 			git clone $(OPTS) $(URL) $(SUBDIR) && \
 			--separate-git-dir=$(DL_DIR)/git/`basename $(URL)` --progress; \
 		else \
+			git config -f $(DL_DIR)/git/`basename $(URL)`/config --unset core.worktree; \
 			mkdir $(SUBDIR) && \
 			echo 'gitdir: '$(DL_DIR)/git/`basename $(URL)` > $(SUBDIR)/.git && \
 			git -C $(DL_DIR)/git/`basename $(URL)` fetch --progress; \

@@ -1,0 +1,25 @@
+From 1c9d1bab1a63eff3d5169f0884b70b36fa357961 Mon Sep 17 00:00:00 2001
+From: Xuefer <xuefer@gmail.com>
+Date: Sat, 25 Jan 2014 12:26:54 +0800
+Subject: [PATCH 3/3] enable Wwrite-strings for gcc
+
+---
+ CMakeLists.txt | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 2718125..65b568f 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
+ 
+ PROJECT(procd C)
+ INCLUDE(GNUInstallDirs)
+-ADD_DEFINITIONS(-Os -ggdb -Wall -Werror --std=gnu99 -Wmissing-declarations)
++ADD_DEFINITIONS(-Os -ggdb -Wall -Werror --std=gnu99 -Wmissing-declarations -Wwrite-strings)
+ 
+ SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+ 
+-- 
+2.4.10
+
