@@ -205,11 +205,9 @@ define KernelPackage/hda
     CONFIG_SND_HDA \
     CONFIG_SND_HDA_RECONFIG=y
   FILES:= \
-    $(LINUX_DIR)/sound/pci/hda/snd-hda-codec.ko \
-    $(LINUX_DIR)/sound/pci/hda/snd-hda-controller.ko
+    $(LINUX_DIR)/sound/pci/hda/snd-hda-codec.ko
   AUTOLOAD:= \
-    $(call AutoLoad,50,snd-hda-codec) \
-    $(call AutoLoad,49,snd-hda-controller)
+    $(call AutoLoad,50,snd-hda-codec)
   $(call AddDepends/sound)
 endef
 
