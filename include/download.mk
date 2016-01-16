@@ -170,7 +170,8 @@ define DownloadMethod/git
 			git config -f $(DL_DIR)/git/`basename $(URL)`/config --unset core.worktree; \
 			mkdir $(SUBDIR) && \
 			echo 'gitdir: '$(DL_DIR)/git/`basename $(URL)` > $(SUBDIR)/.git && \
-			git -C $(DL_DIR)/git/`basename $(URL)` fetch --progress; \
+			git -C $(DL_DIR)/git/`basename $(URL)` remote set-url origin "$(URL)" && \
+			(git -C $(DL_DIR)/git/`basename $(URL)` fetch --progress origin $(VERSION) || git -C $(DL_DIR)/git/`basename $(URL)` fetch --progress origin); \
 		fi) && \
 		(cd $(SUBDIR) && git checkout $(VERSION) . && git submodule update --init --recursive) && \
 		echo "Packing checkout..." && \
