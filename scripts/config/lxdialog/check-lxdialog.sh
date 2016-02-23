@@ -2,6 +2,8 @@
 # Check ncurses compatibility
 
 # What library to link
+alias pkg-config=/usr/bin/pkg-config
+
 ldflags()
 {
 	pkg-config --libs ncursesw 2>/dev/null && exit
