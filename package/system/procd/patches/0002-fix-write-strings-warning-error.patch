@@ -1,4 +1,4 @@
-From d709bc2b8b35de43f0cdadb56b375095dbacdc33 Mon Sep 17 00:00:00 2001
+From c1cf78a002bc12d5d68a3aced3ede7a8eeca2f8a Mon Sep 17 00:00:00 2001
 From: Xuefer <xuefer@gmail.com>
 Date: Sat, 4 Jul 2015 12:27:07 +0800
 Subject: [PATCH 2/3] fix write-strings warning (error)
@@ -10,7 +10,7 @@ Subject: [PATCH 2/3] fix write-strings warning (error)
  inittab.c           |  2 +-
  plug/coldplug.c     |  3 ++-
  plug/hotplug.c      |  6 ++---
- plug/hotplug.h      |  4 ++--
+ plug/hotplug.h      |  8 +++----
  rcS.c               |  8 +++----
  rcS.h               |  4 ++--
  service/instance.c  | 67 +++++++++++++++++++++++++++++++++++------------------
@@ -18,10 +18,10 @@ Subject: [PATCH 2/3] fix write-strings warning (error)
  signal.c            |  2 +-
  system.c            |  4 +++-
  upgraded/upgraded.c |  4 +++-
- 14 files changed, 83 insertions(+), 46 deletions(-)
+ 14 files changed, 85 insertions(+), 48 deletions(-)
 
 diff --git a/initd/init.c b/initd/init.c
-index 9818c4f..187d072 100644
+index 4d17563..1c72116 100644
 --- a/initd/init.c
 +++ b/initd/init.c
 @@ -84,7 +84,9 @@ main(int argc, char **argv)
@@ -148,20 +148,31 @@ index b5ebd07..86157a8 100644
  	uloop_init();
  	hotplug(rules);
 diff --git a/plug/hotplug.h b/plug/hotplug.h
-index 2a44442..27fc08b 100644
+index 9e469d1..2798247 100644
 --- a/plug/hotplug.h
 +++ b/plug/hotplug.h
-@@ -17,8 +17,8 @@
- 
+@@ -18,17 +18,17 @@
  #include <libubox/uloop.h>
  
+ #ifndef DISABLE_INIT
 -void hotplug(char *rules);
 -int hotplug_run(char *rules);
 +void hotplug(const char *rules);
 +int hotplug_run(const char *rules);
  void hotplug_shutdown(void);
  void hotplug_last_event(uloop_timeout_handler handler);
+ void procd_coldplug(void);
+ #else
+-static inline void hotplug(char *rules)
++static inline void hotplug(const char *rules)
+ {
+ }
  
+-static inline int hotplug_run(char *rules)
++static inline int hotplug_run(const char *rules)
+ {
+ 	return 0;
+ }
 diff --git a/rcS.c b/rcS.c
 index 1e38d39..559f575 100644
 --- a/rcS.c
@@ -217,10 +228,10 @@ index 91d37d1..9b6bb84 100644
  
  #endif
 diff --git a/service/instance.c b/service/instance.c
-index b8602b8..2aea530 100644
+index dccf4b4..3cd1b70 100644
 --- a/service/instance.c
 +++ b/service/instance.c
-@@ -179,53 +179,76 @@ jail_run(struct service_instance *in, char **argv)
+@@ -183,53 +183,76 @@ jail_run(struct service_instance *in, char **argv)
  	struct blobmsg_list_node *var;
  	struct jail *jail = &in->jail;
  	int argc = 0;
@@ -320,10 +331,10 @@ index b8602b8..2aea530 100644
  	return argc;
  }
 diff --git a/service/trigger.c b/service/trigger.c
-index 97a06bb..254c5d1 100644
+index 216e1f2..8f53dbd 100644
 --- a/service/trigger.c
 +++ b/service/trigger.c
-@@ -52,7 +52,7 @@ struct trigger {
+@@ -49,7 +49,7 @@ struct trigger {
  
  struct job;
  struct cmd {
@@ -333,7 +344,7 @@ index 97a06bb..254c5d1 100644
  };
  
 diff --git a/signal.c b/signal.c
-index 16824f7..9c76abf 100644
+index 07dda9a..65d97d7 100644
 --- a/signal.c
 +++ b/signal.c
 @@ -33,7 +33,7 @@ static void do_reboot(void)
@@ -343,13 +354,13 @@ index 16824f7..9c76abf 100644
 -	char *msg = NULL;
 +	const char *msg = NULL;
  
+ #ifndef DISABLE_INIT
  	switch(signal) {
- 	case SIGINT:
 diff --git a/system.c b/system.c
-index fb7fbe4..d5f71e6 100644
+index 504cdc0..71ff5a1 100644
 --- a/system.c
 +++ b/system.c
-@@ -120,6 +120,7 @@ static int system_board(struct ubus_context *ctx, struct ubus_object *obj,
+@@ -122,6 +122,7 @@ static int system_board(struct ubus_context *ctx, struct ubus_object *obj,
  		{
  			char *dest;
  			char ch;
@@ -357,7 +368,7 @@ index fb7fbe4..d5f71e6 100644
  
  			key = line;
  			val = strchr(line, '=');
-@@ -340,7 +341,8 @@ static void
+@@ -347,7 +348,8 @@ static void
  procd_spawn_upgraded(char *path)
  {
  	char *wdt_fd = watchdog_fd();

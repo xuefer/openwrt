@@ -1,4 +1,4 @@
-From 1c9d1bab1a63eff3d5169f0884b70b36fa357961 Mon Sep 17 00:00:00 2001
+From 6d5c2b677437f3ab4db67e465c32da7e979c1f0e Mon Sep 17 00:00:00 2001
 From: Xuefer <xuefer@gmail.com>
 Date: Sat, 25 Jan 2014 12:26:54 +0800
 Subject: [PATCH 3/3] enable Wwrite-strings for gcc
@@ -8,7 +8,7 @@ Subject: [PATCH 3/3] enable Wwrite-strings for gcc
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 2718125..65b568f 100644
+index 74959e0..b705882 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6)
