@@ -44,7 +44,8 @@ log_make = \
 		set -o pipefail; \
 		mkdir -p $(BUILD_LOG_DIR)/$(1)$(if $(4),/$(4));) \
 	$$(SUBMAKE) $(subdir_make_opts) $(if $(3),$(3)-)$(2) \
-		$(if $(BUILD_LOG),SILENT= 2>&1 | tee -a $(BUILD_LOG_DIR)/all.log | tee $(BUILD_LOG_DIR)/$(1)$(if $(4),/$(4))/$(if $(3),$(3)-)$(2).txt)
+		$(if $(BUILD_LOG),SILENT= 2>&1 | tee -a $(BUILD_LOG_DIR)/all.log | tee $(BUILD_LOG_DIR)/$(1)$(if $(4),/$(4))/$(if $(3),$(3)-)$(2).txt) \
+		$(if $(BUILD_LOG), || (ret=$$?; $(call ERROR_MESSAGE, $(1) $(if $(3),$(3)-)$(2) failed); exit $ret))
 
 ifdef CONFIG_AUTOREMOVE
 rebuild_check = \
