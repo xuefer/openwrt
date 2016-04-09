@@ -39,7 +39,7 @@ $(eval $(call KernelPackage,hid-generic))
 
 
 define KernelPackage/hid-dragonrise
-  SUBMENU:=$(OTHER_MENU)
+  SUBMENU:=$(INPUT_MODULES_MENU)
   TITLE:=HID: DragonRise Inc. with force feedback
   DEPENDS:=+kmod-usb-hid
   KCONFIG:=\
