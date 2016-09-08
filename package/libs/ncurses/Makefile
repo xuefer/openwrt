@@ -128,6 +128,7 @@ define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)
 	for lib in ncurses panel menu form; do \
 		ln -s lib$$$${lib}w.so $(1)/usr/lib/lib$$$${lib}.so; \
+		ln -s $$$${lib}w.pc $(1)/usr/lib/pkgconfig/$$$${lib}.pc; \
 	done
 	ln -s . $(1)/usr/include/ncursesw
 	$(TARGET_CROSS)ar rc $(1)/usr/lib/libtinfo.a
