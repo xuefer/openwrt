@@ -169,11 +169,11 @@ define DownloadMethod/git
 		else \
 			git config -f $(DL_DIR)/git/`basename $(URL)`/config --unset core.worktree; \
 			mkdir $(SUBDIR) && \
-			echo 'gitdir: '$(DL_DIR)/git/`basename $(URL)` > $(SUBDIR)/.git && \
+			ln -snf $(DL_DIR)/git/`basename $(URL)` $(SUBDIR)/.git && \
 			git -C $(DL_DIR)/git/`basename $(URL)` remote set-url origin "$(URL)" && \
-			(git -C $(DL_DIR)/git/`basename $(URL)` fetch --progress origin $(VERSION) || git -C $(DL_DIR)/git/`basename $(URL)` fetch --progress origin); \
+			(git -C $(DL_DIR)/git/`basename $(URL)` fetch --tags --progress origin $(VERSION) || git -C $(DL_DIR)/git/`basename $(URL)` fetch --tags --progress origin); \
 		fi) && \
-		(cd $(SUBDIR) && git checkout $(VERSION) . && git submodule update --init --recursive) && \
+		(cd $(SUBDIR) && git checkout -f $(VERSION) && echo git submodule && git submodule update --init --recursive) && \
 		echo "Packing checkout..." && \
 		export TAR_TIMESTAMP=`cd $(SUBDIR) && git log -1 --format='@%ct'` && \
 		rm -f $(SUBDIR)/.git && \
