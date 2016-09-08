@@ -121,13 +121,18 @@ define Package/libncurses/install
 	for lib in ncurses panel menu form; do \
 		$(CP) $(PKG_INSTALL_DIR)/usr/lib/lib$$$${lib}w.so* $(1)/usr/lib/; \
 		ln -s lib$$$${lib}w.so $(1)/usr/lib/lib$$$${lib}.so; \
+		ln -s lib$$$${lib}w.so $(1)/usr/lib/lib$$$${lib}.so.5; \
+		ln -s lib$$$${lib}w.so $(1)/usr/lib/lib$$$${lib}.so.$(PKG_VERSION); \
 	done
 endef
 
 define Build/InstallDev
 	$(CP) $(PKG_INSTALL_DIR)/* $(1)
 	for lib in ncurses panel menu form; do \
+		ln -s lib$$$${lib}w.a  $(1)/usr/lib/lib$$$${lib}.a; \
 		ln -s lib$$$${lib}w.so $(1)/usr/lib/lib$$$${lib}.so; \
+		ln -s lib$$$${lib}w.so $(1)/usr/lib/lib$$$${lib}.so.5; \
+		ln -s lib$$$${lib}w.so $(1)/usr/lib/lib$$$${lib}.so.$(PKG_VERSION); \
 		ln -s $$$${lib}w.pc $(1)/usr/lib/pkgconfig/$$$${lib}.pc; \
 	done
 	ln -s . $(1)/usr/include/ncursesw
