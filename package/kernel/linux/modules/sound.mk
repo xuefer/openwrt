@@ -202,7 +202,8 @@ $(eval $(call KernelPackage,sound-maestro3))
 define KernelPackage/hda
   TITLE:=HD Audio common driver
   KCONFIG:= \
-    CONFIG_SND_HDA
+    CONFIG_SND_HDA \
+    CONFIG_SND_HDA_POWER_SAVE_DEFAULT=5
   FILES:= \
     $(LINUX_DIR)/sound/pci/hda/snd-hda-codec.ko
   AUTOLOAD:= \
