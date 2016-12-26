@@ -1,4 +1,4 @@
-From c1cf78a002bc12d5d68a3aced3ede7a8eeca2f8a Mon Sep 17 00:00:00 2001
+From aecd3f92e039a2a8580f413b29381a73348af453 Mon Sep 17 00:00:00 2001
 From: Xuefer <xuefer@gmail.com>
 Date: Sat, 4 Jul 2015 12:27:07 +0800
 Subject: [PATCH 2/3] fix write-strings warning (error)
@@ -14,14 +14,13 @@ Subject: [PATCH 2/3] fix write-strings warning (error)
  rcS.c               |  8 +++----
  rcS.h               |  4 ++--
  service/instance.c  | 67 +++++++++++++++++++++++++++++++++++------------------
- service/trigger.c   |  2 +-
  signal.c            |  2 +-
  system.c            |  4 +++-
  upgraded/upgraded.c |  4 +++-
- 14 files changed, 85 insertions(+), 48 deletions(-)
+ 13 files changed, 84 insertions(+), 47 deletions(-)
 
 diff --git a/initd/init.c b/initd/init.c
-index 4d17563..1c72116 100644
+index e453cff..c8f7d59 100644
 --- a/initd/init.c
 +++ b/initd/init.c
 @@ -84,7 +84,9 @@ main(int argc, char **argv)
@@ -33,10 +32,10 @@ index 4d17563..1c72116 100644
 +		char arg1[] = "/etc/modules-boot.d/";
 +		char *kmod[] = { arg0, arg1, NULL };
  
- 		if (debug < 3) {
- 			int fd = open("/dev/null", O_RDWR);
+ 		if (debug < 3)
+ 			patch_stdio("/dev/null");
 diff --git a/initd/mkdev.c b/initd/mkdev.c
-index e6d3d0c..003fe50 100644
+index e826707..50aefd3 100644
 --- a/initd/mkdev.c
 +++ b/initd/mkdev.c
 @@ -60,15 +60,16 @@ static void make_dev(const char *path, bool block, int major, int minor)
@@ -60,10 +59,10 @@ index e6d3d0c..003fe50 100644
  		char *c;
  		int major = 0, minor = 0;
 diff --git a/initd/preinit.c b/initd/preinit.c
-index f38d8ef..5d8154c 100644
+index 729978e..2507d1c 100644
 --- a/initd/preinit.c
 +++ b/initd/preinit.c
-@@ -51,7 +51,8 @@ static void
+@@ -52,7 +52,8 @@ static void
  spawn_procd(struct uloop_process *proc, int ret)
  {
  	char *wdt_fd = watchdog_fd();
@@ -73,7 +72,7 @@ index f38d8ef..5d8154c 100644
  	struct stat s;
  	char dbg[2];
  
-@@ -85,8 +86,13 @@ plugd_proc_cb(struct uloop_process *proc, int ret)
+@@ -87,8 +88,13 @@ plugd_proc_cb(struct uloop_process *proc, int ret)
  void
  preinit(void)
  {
@@ -86,14 +85,14 @@ index f38d8ef..5d8154c 100644
 +	char plug1[] = "-h";
 +	char plug2[] = "/etc/hotplug-preinit.json";
 +	char *plug[] = { plug0, plug1, plug2, NULL };
+ 	int fd;
  
  	LOG("- preinit -\n");
- 
 diff --git a/inittab.c b/inittab.c
-index f8f0218..dae1eec 100644
+index 011d7a6..f30517b 100644
 --- a/inittab.c
 +++ b/inittab.c
-@@ -61,7 +61,7 @@ struct init_action {
+@@ -66,7 +66,7 @@ struct init_action {
  };
  
  static const char *tab = "/etc/inittab";
@@ -117,10 +116,10 @@ index 5fcb9a3..8dc9014 100644
  
  	umount2("/dev/pts", MNT_DETACH);
 diff --git a/plug/hotplug.c b/plug/hotplug.c
-index b5ebd07..86157a8 100644
+index ae972f6..f5ac19f 100644
 --- a/plug/hotplug.c
 +++ b/plug/hotplug.c
-@@ -291,7 +291,7 @@ enum {
+@@ -305,7 +305,7 @@ enum {
  };
  
  static struct cmd_handler {
@@ -129,7 +128,7 @@ index b5ebd07..86157a8 100644
  	int atomic;
  	void (*handler)(struct blob_attr *msg, struct blob_attr *data);
  	void (*start)(struct blob_attr *msg, struct blob_attr *data);
-@@ -566,7 +566,7 @@ void hotplug_last_event(uloop_timeout_handler handler)
+@@ -580,7 +580,7 @@ void hotplug_last_event(uloop_timeout_handler handler)
  		uloop_timeout_cancel(&last_event);
  }
  
@@ -138,7 +137,7 @@ index b5ebd07..86157a8 100644
  {
  	struct sockaddr_nl nls;
  	int nlbufsize = 512 * 1024;
-@@ -594,7 +594,7 @@ void hotplug(char *rules)
+@@ -608,7 +608,7 @@ void hotplug(char *rules)
  	uloop_fd_add(&hotplug_fd, ULOOP_READ);
  }
  
@@ -228,10 +227,10 @@ index 91d37d1..9b6bb84 100644
  
  #endif
 diff --git a/service/instance.c b/service/instance.c
-index dccf4b4..3cd1b70 100644
+index 018db3c..753b281 100644
 --- a/service/instance.c
 +++ b/service/instance.c
-@@ -183,53 +183,76 @@ jail_run(struct service_instance *in, char **argv)
+@@ -185,53 +185,76 @@ jail_run(struct service_instance *in, char **argv)
  	struct blobmsg_list_node *var;
  	struct jail *jail = &in->jail;
  	int argc = 0;
@@ -330,19 +329,6 @@ index dccf4b4..3cd1b70 100644
  
  	return argc;
  }
-diff --git a/service/trigger.c b/service/trigger.c
-index 216e1f2..8f53dbd 100644
---- a/service/trigger.c
-+++ b/service/trigger.c
-@@ -49,7 +49,7 @@ struct trigger {
- 
- struct job;
- struct cmd {
--	char *name;
-+	const char *name;
- 	void (*handler)(struct job *job, struct blob_attr *exec, struct blob_attr *env);
- };
- 
 diff --git a/signal.c b/signal.c
 index 07dda9a..65d97d7 100644
 --- a/signal.c
@@ -357,10 +343,10 @@ index 07dda9a..65d97d7 100644
  #ifndef DISABLE_INIT
  	switch(signal) {
 diff --git a/system.c b/system.c
-index 504cdc0..71ff5a1 100644
+index 1e31ce6..de670b4 100644
 --- a/system.c
 +++ b/system.c
-@@ -122,6 +122,7 @@ static int system_board(struct ubus_context *ctx, struct ubus_object *obj,
+@@ -123,6 +123,7 @@ static int system_board(struct ubus_context *ctx, struct ubus_object *obj,
  		{
  			char *dest;
  			char ch;
@@ -368,7 +354,7 @@ index 504cdc0..71ff5a1 100644
  
  			key = line;
  			val = strchr(line, '=');
-@@ -347,7 +348,8 @@ static void
+@@ -356,7 +357,8 @@ static void
  procd_spawn_upgraded(char *path)
  {
  	char *wdt_fd = watchdog_fd();
@@ -394,5 +380,5 @@ index d7433e7..2e5f7dc 100644
  	args[2] = folder;
  	upgrade_proc.cb = upgrade_proc_cb;
 -- 
-2.4.10
+2.7.3
 
