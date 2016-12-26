@@ -7,11 +7,11 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=qemu
-PKG_VERSION:=2.0.0
+PKG_VERSION:=2.8.0
 PKG_RELEASE:=1
 
-PKG_SOURCE_URL:=@SAVANNAH/qemu
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.bz2
+PKG_SOURCE_URL:=http://wiki.qemu-project.org/download/$(PKG_SOURCE)
 PKG_HASH:=dafd5d7f649907b6b617b822692f4c82e60cf29bc0fc58bc2036219b591e5e62
 
 include $(INCLUDE_DIR)/host-build.mk
