@@ -46,6 +46,7 @@ define Package/tcpdump-mini
 endef
 
 CONFIGURE_ARGS += \
+	--without-cap-ng \
 	--without-crypto
 
 ifeq ($(CONFIG_IPV6),y)
