@@ -385,7 +385,7 @@ ifeq ($(CONFIG_EXTERNAL_TOOLCHAIN),)
   endef
 
   define Package/glibc/conffiles
-  /etc/nsswitch.conf
+/etc/nsswitch.conf
   endef
 
   define Package/glibc/install
