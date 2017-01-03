@@ -577,7 +577,7 @@ define KernelPackage/crypto-misc
   $(call AddDepends/crypto)
 endef
 
-ifeq ($(CONFIG_TARGET_x86_64)$(CONFIG_TARGET_x86_64_atom),)
+ifndef CONFIG_TARGET_x86_64
   define KernelPackage/crypto-misc/x86
     FILES+=$(LINUX_DIR)/arch/x86/crypto/twofish-i586.ko
   endef

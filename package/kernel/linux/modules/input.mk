@@ -197,7 +197,7 @@ $(eval $(call KernelPackage,input-matrixkmap))
 define KernelPackage/acpi-button
   SUBMENU:=$(INPUT_MODULES_MENU)
   TITLE:=ACPI Button Support
-  DEPENDS:=@(TARGET_x86_generic||TARGET_x86_kvm_guest||TARGET_x86_xen_domu||TARGET_x86_64||TARGET_x86_64_atom) +kmod-input-evdev
+  DEPENDS:=@TARGET_x86 +kmod-input-evdev
   KCONFIG:=CONFIG_ACPI_BUTTON
   FILES:=$(LINUX_DIR)/drivers/acpi/button.ko
   AUTOLOAD:=$(call AutoLoad,06,button)
