@@ -182,6 +182,27 @@ endef
 
 $(eval $(call KernelPackage,fb-sys-fops))
 
+
+define KernelPackage/acpi-video
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=ACPI_VIDEO
+  HIDDEN:=1
+  DEPENDS:=+kmod-input-core
+  KCONFIG:=CONFIG_ACPI_VIDEO
+  FILES:= $(LINUX_DIR)/drivers/acpi/video.ko
+endef
+
+define KernelPackage/acpi-video/description
+  This driver implements the ACPI Extensions For Display Adapters
+  for integrated graphics devices on motherboard, as specified in
+  ACPI 2.0 Specification, Appendix B.  This supports basic operations
+  such as defining the video POST device, retrieving EDID information,
+  and setting up a video output.
+endef
+
+$(eval $(call KernelPackage,acpi-video))
+
+
 define KernelPackage/drm
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Direct Rendering Manager (DRM) support
@@ -278,6 +299,70 @@ define KernelPackage/drm-imx-ldb/description
 endef
 
 $(eval $(call KernelPackage,drm-imx-ldb))
+
+
+define KernelPackage/drm-kms-helper
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=KMS helper
+  HIDDEN:=1
+  DEPENDS:=+kmod-drm +kmod-fbcon +kmod-fb-cfb-copyarea +kmod-fb-cfb-imgblt +kmod-fb-cfb-fillrect +kmod-fb-sys-fops
+  KCONFIG:= \
+	CONFIG_DRM_KMS_HELPER \
+	CONFIG_FB_SYS_FILLRECT \
+	CONFIG_FB_SYS_COPYAREA \
+	CONFIG_FB_SYS_IMAGEBLIT \
+	CONFIG_DRM_KMS_FB_HELPER=y
+  FILES:= \
+	$(LINUX_DIR)/drivers/video/fbdev/core/syscopyarea.ko \
+	$(LINUX_DIR)/drivers/video/fbdev/core/sysfillrect.ko \
+	$(LINUX_DIR)/drivers/video/fbdev/core/sysimgblt.ko \
+	$(LINUX_DIR)/drivers/gpu/drm/drm_kms_helper.ko
+endef
+
+define KernelPackage/drm-kms-helper/description
+  CRTC helpers for KMS drivers
+endef
+
+$(eval $(call KernelPackage,drm-kms-helper))
+
+
+define KernelPackage/drm-fbdev-emulation
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Legacy fbdev support for drm driver
+  DEPENDS:=+kmod-drm-kms-helper
+  KCONFIG:=CONFIG_DRM_FBDEV_EMULATION=y
+endef
+
+define KernelPackage/drm-fbdev-emulation/description
+  Choose this option if you have a need for the legacy fbdev
+support. Note that this support also provides the linux console
+support on top of your modesetting driver.
+endef
+
+$(eval $(call KernelPackage,drm-fbdev-emulation))
+
+
+define KernelPackage/drm-i915
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Intel 8xx/9xx/G3x/G4x/HD Graphics
+  DEPENDS:=+kmod-drm-kms-helper +TARGET_x86:kmod-acpi-video
+  KCONFIG:=CONFIG_DRM_I915 \
+	CONFIG_DRM_I915_PRELIMINARY_HW_SUPPORT=n
+  FILES:= \
+	$(LINUX_DIR)/drivers/gpu/drm/i915/i915.ko \
+	$(LINUX_DIR)/drivers/char/agp/intel-gtt.ko
+  AUTOLOAD:=$(call AutoLoad,06,i915)
+endef
+
+define KernelPackage/drm-i915/description
+  Choose this option if you have a system that has "Intel Graphics
+Media Accelerator" or "HD Graphics" integrated graphics,
+including 830M, 845G, 852GM, 855GM, 865G, 915G, 945G, 965G,
+G35, G41, G43, G45 chipsets and Celeron, Pentium, Core i3,
+Core i5, Core i7 as well as Atom CPUs with integrated graphics.
+endef
+
+$(eval $(call KernelPackage,drm-i915))
 
 
 #
