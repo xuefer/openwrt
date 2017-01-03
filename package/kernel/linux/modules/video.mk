@@ -203,6 +203,52 @@ endef
 $(eval $(call KernelPackage,acpi-video))
 
 
+define KernelPackage/acpi-wmi
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=WMI
+  HIDDEN:=1
+  KCONFIG:=CONFIG_ACPI_WMI \
+	CONFIG_ACER_WMI=n \
+	CONFIG_ALIENWARE_WMI=n \
+	CONFIG_ASUS_NB_WMI=n \
+	CONFIG_ASUS_WMI=n \
+	CONFIG_DELL_WMI=n \
+	CONFIG_DELL_WMI_AIO=n \
+	CONFIG_EEEPC_WMI=n \
+	CONFIG_HP_WMI=n \
+	CONFIG_MSI_WMI=n \
+	CONFIG_MXM_WMI=n \
+	CONFIG_TC1100_WMI=n \
+	CONFIG_ACPI_TOSHIBA=n \
+	CONFIG_TOSHIBA_WMI=n
+  FILES:=$(LINUX_DIR)/drivers/platform/x86/wmi.ko
+endef
+
+define KernelPackage/acpi-wmi/description
+  This driver adds support for the ACPI-WMI (Windows Management
+  Instrumentation) mapper device (PNP0C14) found on some systems.
+endef
+
+$(eval $(call KernelPackage,acpi-wmi))
+
+
+define KernelPackage/mxm-wmi
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=WMI support for MXM Laptop Graphics
+  HIDDEN:=1
+  DEPENDS:=+TARGET_x86:kmod-acpi-wmi
+  KCONFIG:=CONFIG_MXM_WMI
+  FILES:=$(LINUX_DIR)/drivers/platform/x86/mxm-wmi.ko
+endef
+
+define KernelPackage/mxm-wmi/description
+  MXM is a standard for laptop graphics cards, the WMI interface
+  is required for switchable nvidia graphics machines
+endef
+
+$(eval $(call KernelPackage,mxm-wmi))
+
+
 define KernelPackage/drm
   SUBMENU:=$(VIDEO_MENU)
   TITLE:=Direct Rendering Manager (DRM) support
@@ -340,6 +386,45 @@ support on top of your modesetting driver.
 endef
 
 $(eval $(call KernelPackage,drm-fbdev-emulation))
+
+
+define KernelPackage/drm-ttm
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=DRM_TTM
+  HIDDEN:=1
+  DEPENDS:=+kmod-drm
+  KCONFIG:=CONFIG_DRM_TTM
+  FILES:= \
+	$(LINUX_DIR)/drivers/gpu/drm/ttm/ttm.ko
+endef
+
+define KernelPackage/drm-ttm/description
+  GPU memory management subsystem for devices with multiple
+GPU memory types. Will be enabled automatically if a device driver
+uses it.
+endef
+
+$(eval $(call KernelPackage,drm-ttm))
+
+
+define KernelPackage/drm-nouveau
+  SUBMENU:=$(VIDEO_MENU)
+  TITLE:=Nouveau (NVIDIA) cards
+  DEPENDS:=+kmod-drm-kms-helper +kmod-drm-ttm +TARGET_x86:kmod-acpi-video +TARGET_x86:kmod-mxm-wmi +kmod-hwmon-core
+  KCONFIG:=CONFIG_DRM_NOUVEAU \
+	CONFIG_DRM_NOUVEAU_BACKLIGHT=n \
+	CONFIG_NOUVEAU_DEBUG=5 \
+	CONFIG_NOUVEAU_DEBUG_DEFAULT=3
+  FILES:= \
+	$(LINUX_DIR)/drivers/gpu/drm/nouveau/nouveau.ko
+  AUTOLOAD:=$(call AutoLoad,06,nouveau)
+endef
+
+define KernelPackage/drm-nouveau/description
+  Choose this option for open-source NVIDIA support.
+endef
+
+$(eval $(call KernelPackage,drm-nouveau))
 
 
 define KernelPackage/drm-i915
