@@ -412,7 +412,7 @@ define KernelPackage/drm-nouveau
   TITLE:=Nouveau (NVIDIA) cards
   DEPENDS:=+kmod-drm-kms-helper +kmod-drm-ttm +TARGET_x86:kmod-acpi-video +TARGET_x86:kmod-mxm-wmi +kmod-hwmon-core
   KCONFIG:=CONFIG_DRM_NOUVEAU \
-	CONFIG_DRM_NOUVEAU_BACKLIGHT=n \
+	CONFIG_DRM_NOUVEAU_BACKLIGHT=y \
 	CONFIG_NOUVEAU_DEBUG=5 \
 	CONFIG_NOUVEAU_DEBUG_DEFAULT=3
   FILES:= \

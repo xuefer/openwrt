@@ -759,3 +759,14 @@ config KERNEL_DEVKMEM
 	  Say Y here if you want to support the /dev/kmem device. The
 	  /dev/kmem device is rarely used, but can be used for certain
 	  kind of kernel debugging operations.
+
+config KERNEL_DRM_LOAD_EDID_FIRMWARE
+	bool "load edid firmware"
+
+config KERNEL_CFQ_GROUP_IOSCHED
+	bool "CFQ_GROUP_IOSCHED"
+
+config KERNEL_NO_GPU_AUTHENTICATION
+	bool "NO_GPU_AUTHENTICATION"
+	help
+	  Disable GPU ioctl AUTHENTICATION for drm

@@ -1,0 +1,46 @@
+commit 6daa9a6a4b9727ed2f3567199130f336e8bd810a
+Author: Chih-Wei Huang <cwhuang@linux.org.tw>
+Date:   Fri Sep 5 21:07:38 2014 +0800
+
+    HACK: drm: disable GPU authentication
+    
+    Signed-off-by: Chih-Wei Huang <cwhuang@linux.org.tw>
+
+diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+index c4bf9a1..e9f037b 100644
+--- a/drivers/gpu/drm/Kconfig
++++ b/drivers/gpu/drm/Kconfig
+@@ -25,6 +25,13 @@ config DRM_MIPI_DSI
+ 	bool
+ 	depends on DRM
+ 
++config NO_GPU_AUTHENTICATION
++	bool "Disable GPU authentication"
++	depends on DRM
++	default n
++	help
++	  Choose this option if you want to disable GPU authentication.
++
+ config DRM_KMS_HELPER
+ 	tristate
+ 	depends on DRM
+diff --git a/drivers/gpu/drm/drm_ioctl.c b/drivers/gpu/drm/drm_ioctl.c
+index 8ce2a0c..d0b5c78 100644
+--- a/drivers/gpu/drm/drm_ioctl.c
++++ b/drivers/gpu/drm/drm_ioctl.c
+@@ -515,6 +515,7 @@ static int drm_version(struct drm_device *dev, void *data,
+  */
+ int drm_ioctl_permit(u32 flags, struct drm_file *file_priv)
+ {
++#ifndef CONFIG_NO_GPU_AUTHENTICATION
+ 	/* ROOT_ONLY is only for CAP_SYS_ADMIN */
+ 	if (unlikely((flags & DRM_ROOT_ONLY) && !capable(CAP_SYS_ADMIN)))
+ 		return -EACCES;
+@@ -538,6 +539,7 @@ int drm_ioctl_permit(u32 flags, struct drm_file *file_priv)
+ 	if (unlikely(!(flags & DRM_RENDER_ALLOW) &&
+ 		     drm_is_render_client(file_priv)))
+ 		return -EACCES;
++#endif
+ 
+ 	return 0;
+ }
