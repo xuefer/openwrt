@@ -39,6 +39,7 @@ endef
 define Package/base-files/conffiles
 /etc/config/network
 /etc/config/system
+/etc/fstab
 /etc/hosts
 /etc/inittab
 /etc/group
