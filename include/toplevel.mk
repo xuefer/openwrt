@@ -60,7 +60,7 @@ else
 endif
 
 ifeq ($(FORCE),)
-  .config scripts/config/conf scripts/config/mconf: staging_dir/host/.prereq-build
+  .config scripts/config/conf scripts/config/mconf scripts/config/nconf: staging_dir/host/.prereq-build
 endif
 
 SCAN_COOKIE?=$(shell echo $$$$)
@@ -103,6 +103,11 @@ scripts/config/mconf:
 
 $(eval $(call rdep,scripts/config,scripts/config/mconf))
 
+scripts/config/nconf:
+	@$(_SINGLE)$(SUBMAKE) -s -C scripts/config all CC="$(HOSTCC_WRAPPER)"
+
+$(eval $(call rdep,scripts/config,scripts/config/nconf))
+
 scripts/config/conf:
 	@$(_SINGLE)$(SUBMAKE) -s -C scripts/config conf CC="$(HOSTCC_WRAPPER)"
 
@@ -126,6 +131,12 @@ oldconfig: scripts/config/conf prepare-tmpinfo FORCE
 	$< --$(if $(confdefault),$(confdefault),old)config Config.in
 
 menuconfig: scripts/config/mconf prepare-tmpinfo FORCE
+	if [ \! -e .config -a -e $(HOME)/.openwrt/defconfig ]; then \
+		cp $(HOME)/.openwrt/defconfig .config; \
+	fi
+	$< Config.in
+
+nconfig: scripts/config/nconf prepare-tmpinfo FORCE
 	if [ \! -e .config -a -e $(HOME)/.openwrt/defconfig ]; then \
 		cp $(HOME)/.openwrt/defconfig .config; \
 	fi
@@ -233,7 +244,7 @@ distclean:
 	@$(_SINGLE)$(SUBMAKE) -C scripts/config clean
 
 ifeq ($(findstring v,$(DEBUG)),)
-  .SILENT: symlinkclean clean dirclean distclean config-clean download help tmpinfo-clean .config scripts/config/mconf scripts/config/conf menuconfig staging_dir/host/.prereq-build tmp/.prereq-package prepare-tmpinfo
+  .SILENT: symlinkclean clean dirclean distclean config-clean download help tmpinfo-clean .config scripts/config/mconf scripts/config/conf menuconfig nconfig staging_dir/host/.prereq-build tmp/.prereq-package prepare-tmpinfo
 endif
 .PHONY: help FORCE
 .NOTPARALLEL:

@@ -19,20 +19,29 @@ export CFLAGS += -DKBUILD_NO_NLS -I. $(call check_lxdialog,ccflags)
 
 conf-objs	:= conf.o zconf.tab.o
 mconf-objs	:= mconf.o zconf.tab.o
+nconf-objs	:= nconf.o zconf.tab.o nconf.gui.o
 lxdialog-objs := \
 	lxdialog/checklist.o lxdialog/util.o lxdialog/inputbox.o \
 	lxdialog/textbox.o lxdialog/yesno.o lxdialog/menubox.o
 
 clean-files	:= zconf.tab.c lex.zconf.c zconf.hash.c
 
-all: conf mconf
+all: conf mconf nconf
 
 conf: $(conf-objs)
 mconf: $(mconf-objs) $(lxdialog-objs)
 	$(CC) -o $@ $^ $(call check_lxdialog,ldflags $(CC))
 
+HOSTLOADLIBES_nconf = $(shell \
+	pkg-config --libs menuw panelw ncursesw 2>/dev/null \
+	|| pkg-config --libs menu panel ncurses 2>/dev/null \
+	|| echo "-lmenu -lpanel -lncurses"  )
+
+nconf: $(nconf-objs)
+	$(CC) -o $@ $^ $(HOSTLOADLIBES_nconf)
+
 clean:
-	rm -f *.o lxdialog/*.o $(clean-files) conf mconf
+	rm -f *.o lxdialog/*.o $(clean-files) conf mconf nconf
 
 zconf.tab.o: zconf.lex.c zconf.hash.c confdata.c
 
