@@ -1,4 +1,4 @@
-From aecd3f92e039a2a8580f413b29381a73348af453 Mon Sep 17 00:00:00 2001
+From 7f0f1fffbed135b097dbc70999f5f8d369670463 Mon Sep 17 00:00:00 2001
 From: Xuefer <xuefer@gmail.com>
 Date: Sat, 4 Jul 2015 12:27:07 +0800
 Subject: [PATCH 2/3] fix write-strings warning (error)
@@ -380,5 +380,5 @@ index d7433e7..2e5f7dc 100644
  	args[2] = folder;
  	upgrade_proc.cb = upgrade_proc_cb;
 -- 
-2.7.3
+2.10.2
 

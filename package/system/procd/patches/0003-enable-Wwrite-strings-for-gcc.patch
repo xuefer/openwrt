@@ -1,4 +1,4 @@
-From a2a55884c0702484a79ce7bc2e7de79771b83d6e Mon Sep 17 00:00:00 2001
+From deaee40156df20981f46544388a75d7c1c1de075 Mon Sep 17 00:00:00 2001
 From: Xuefer <xuefer@gmail.com>
 Date: Sat, 25 Jan 2014 12:26:54 +0800
 Subject: [PATCH 3/3] enable Wwrite-strings for gcc
@@ -21,5 +21,5 @@ index 444dd20..29c7ca1 100644
  SET(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
  
 -- 
-2.7.3
+2.10.2
 
