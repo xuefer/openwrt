@@ -164,7 +164,7 @@ define DownloadMethod/git
 		rm -rf $(SUBDIR) && \
 		[ \! -d $(SUBDIR) ] && \
 		(if [ \! -d $(DL_DIR)/git/`basename $(URL)` ]; then \
-			git clone $(OPTS) $(URL) $(SUBDIR) && \
+			git clone $(OPTS) $(URL) $(SUBDIR) \
 			--separate-git-dir=$(DL_DIR)/git/`basename $(URL)` --progress; \
 		else \
 			git config -f $(DL_DIR)/git/`basename $(URL)`/config --unset core.worktree; \
