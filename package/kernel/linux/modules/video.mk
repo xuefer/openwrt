@@ -432,7 +432,12 @@ define KernelPackage/drm-i915
   TITLE:=Intel 8xx/9xx/G3x/G4x/HD Graphics
   DEPENDS:=+kmod-drm-kms-helper +TARGET_x86:kmod-acpi-video
   KCONFIG:=CONFIG_DRM_I915 \
-	CONFIG_DRM_I915_PRELIMINARY_HW_SUPPORT=n
+	CONFIG_DRM_I915_DEBUG_GEM=n \
+	CONFIG_DRM_I915_DEBUG=n \
+	CONFIG_DRM_I915_GVT=n \
+	CONFIG_DRM_I915_PRELIMINARY_HW_SUPPORT=n \
+	CONFIG_DRM_I915_USERPTR=y \
+	CONFIG_DRM_I915_WERROR=y
   FILES:= \
 	$(LINUX_DIR)/drivers/gpu/drm/i915/i915.ko \
 	$(LINUX_DIR)/drivers/char/agp/intel-gtt.ko

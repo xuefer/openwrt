@@ -311,6 +311,17 @@ endef
 $(eval $(call KernelPackage,ipt-raw6))
 
 
+define KernelPackage/ipt-security
+  TITLE:=Netfilter IPv6 security table support
+  KCONFIG:=CONFIG_IP6_NF_SECURITY
+  FILES:=$(LINUX_DIR)/net/ipv6/netfilter/ip6table_security.ko
+  AUTOLOAD:=$(call AutoProbe,ip6table_security)
+  $(call AddDepends/ipt,+kmod-ip6tables)
+endef
+
+$(eval $(call KernelPackage,ipt-security))
+
+
 define KernelPackage/ipt-nat6
   TITLE:=IPv6 NAT targets
   KCONFIG:=$(KCONFIG_IPT_NAT6)
@@ -492,6 +503,22 @@ define KernelPackage/ipt-tproxy/description
 endef
 
 $(eval $(call KernelPackage,ipt-tproxy))
+
+define KernelPackage/ipt-secmark
+  TITLE:=Transparent proxying support
+  DEPENDS+=+kmod-ipt-conntrack +IPV6:kmod-ip6tables
+  KCONFIG:=CONFIG_NETFILTER_XT_TARGET_SECMARK
+  FILES:= \
+  	$(foreach mod,$(IPT_SECMARK-m),$(LINUX_DIR)/net/$(mod).ko)
+  AUTOLOAD:=$(call AutoProbe,$(notdir $(IPT_SECMARK-m)))
+  $(call AddDepends/ipt)
+endef
+
+define KernelPackage/ipt-secmark/description
+  Kernel modules for Transparent Proxying
+endef
+
+$(eval $(call KernelPackage,ipt-secmark))
 
 define KernelPackage/ipt-tee
   TITLE:=TEE support
