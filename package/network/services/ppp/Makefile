@@ -54,10 +54,6 @@ endef
 define Package/ppp/conffiles
 /etc/ppp/chap-secrets
 /etc/ppp/filter
-/etc/ppp/ip-down
-/etc/ppp/ip-up
-/etc/ppp/ipv6-down
-/etc/ppp/ipv6-up
 /etc/ppp/options
 endef
 
