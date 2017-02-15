@@ -1,4 +1,4 @@
-From 7f0f1fffbed135b097dbc70999f5f8d369670463 Mon Sep 17 00:00:00 2001
+From de89cd0d4d1197566c6b91148dda7b51bfad392b Mon Sep 17 00:00:00 2001
 From: Xuefer <xuefer@gmail.com>
 Date: Sat, 4 Jul 2015 12:27:07 +0800
 Subject: [PATCH 2/3] fix write-strings warning (error)
@@ -35,10 +35,10 @@ index e453cff..c8f7d59 100644
  		if (debug < 3)
  			patch_stdio("/dev/null");
 diff --git a/initd/mkdev.c b/initd/mkdev.c
-index e826707..50aefd3 100644
+index 44101aa..8534548 100644
 --- a/initd/mkdev.c
 +++ b/initd/mkdev.c
-@@ -60,15 +60,16 @@ static void make_dev(const char *path, bool block, int major, int minor)
+@@ -61,15 +61,16 @@ static void make_dev(const char *path, bool block, int major, int minor)
  
  static void find_devs(bool block)
  {
@@ -116,10 +116,10 @@ index 5fcb9a3..8dc9014 100644
  
  	umount2("/dev/pts", MNT_DETACH);
 diff --git a/plug/hotplug.c b/plug/hotplug.c
-index ae972f6..f5ac19f 100644
+index c8bea1b..3bc5478 100644
 --- a/plug/hotplug.c
 +++ b/plug/hotplug.c
-@@ -305,7 +305,7 @@ enum {
+@@ -306,7 +306,7 @@ enum {
  };
  
  static struct cmd_handler {
@@ -128,7 +128,7 @@ index ae972f6..f5ac19f 100644
  	int atomic;
  	void (*handler)(struct blob_attr *msg, struct blob_attr *data);
  	void (*start)(struct blob_attr *msg, struct blob_attr *data);
-@@ -580,7 +580,7 @@ void hotplug_last_event(uloop_timeout_handler handler)
+@@ -581,7 +581,7 @@ void hotplug_last_event(uloop_timeout_handler handler)
  		uloop_timeout_cancel(&last_event);
  }
  
@@ -137,7 +137,7 @@ index ae972f6..f5ac19f 100644
  {
  	struct sockaddr_nl nls;
  	int nlbufsize = 512 * 1024;
-@@ -608,7 +608,7 @@ void hotplug(char *rules)
+@@ -609,7 +609,7 @@ void hotplug(char *rules)
  	uloop_fd_add(&hotplug_fd, ULOOP_READ);
  }
  
@@ -173,7 +173,7 @@ index 9e469d1..2798247 100644
  	return 0;
  }
 diff --git a/rcS.c b/rcS.c
-index 1e38d39..559f575 100644
+index 0208a75..e78391e 100644
 --- a/rcS.c
 +++ b/rcS.c
 @@ -104,7 +104,7 @@ static void q_initd_complete(struct runqueue *q, struct runqueue_task *p)
@@ -185,7 +185,7 @@ index 1e38d39..559f575 100644
  {
  	static const struct runqueue_task_type initd_type = {
  		.run = q_initd_run,
-@@ -130,7 +130,7 @@ static void add_initd(struct runqueue *q, char *file, char *param)
+@@ -132,7 +132,7 @@ static void add_initd(struct runqueue *q, char *file, char *param)
  	runqueue_task_add(q, &s->proc.task, false);
  }
  
@@ -194,7 +194,7 @@ index 1e38d39..559f575 100644
  {
  	char *dir = alloca(2 + strlen(path) + strlen(file) + strlen(pattern));
  	glob_t gl;
-@@ -156,7 +156,7 @@ static int _rc(struct runqueue *q, char *path, const char *file, char *pattern,
+@@ -158,7 +158,7 @@ static int _rc(struct runqueue *q, char *path, const char *file, char *pattern,
  	return 0;
  }
  
@@ -203,7 +203,7 @@ index 1e38d39..559f575 100644
  {
  	runqueue_init(&q);
  	q.empty_cb = q_empty;
-@@ -165,7 +165,7 @@ int rcS(char *pattern, char *param, void (*q_empty)(struct runqueue *))
+@@ -167,7 +167,7 @@ int rcS(char *pattern, char *param, void (*q_empty)(struct runqueue *))
  	return _rc(&q, "/etc/rc.d", pattern, "*", param);
  }
  
@@ -227,10 +227,10 @@ index 91d37d1..9b6bb84 100644
  
  #endif
 diff --git a/service/instance.c b/service/instance.c
-index 018db3c..753b281 100644
+index 4d340fd..f639c92 100644
 --- a/service/instance.c
 +++ b/service/instance.c
-@@ -185,53 +185,76 @@ jail_run(struct service_instance *in, char **argv)
+@@ -187,53 +187,76 @@ jail_run(struct service_instance *in, char **argv)
  	struct blobmsg_list_node *var;
  	struct jail *jail = &in->jail;
  	int argc = 0;

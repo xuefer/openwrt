@@ -1,4 +1,4 @@
-From 5f167b48d91c9bdecdf56d2235c511b85b130e4b Mon Sep 17 00:00:00 2001
+From 3919c416ae0651fd65e6aacab6c37c046973dca2 Mon Sep 17 00:00:00 2001
 From: Xuefer <xuefer@gmail.com>
 Date: Sat, 4 Jul 2015 12:26:56 +0800
 Subject: [PATCH 1/3] fix segv on const string
@@ -10,10 +10,10 @@ Subject: [PATCH 1/3] fix segv on const string
  3 files changed, 6 insertions(+), 4 deletions(-)
 
 diff --git a/service/service.c b/service/service.c
-index 2c73901..6079608 100644
+index 0584ee0..6df9ddb 100644
 --- a/service/service.c
 +++ b/service/service.c
-@@ -579,17 +579,19 @@ static struct ubus_object main_object = {
+@@ -573,17 +573,19 @@ static struct ubus_object main_object = {
  };
  
  int
@@ -36,7 +36,7 @@ index 2c73901..6079608 100644
  		blobmsg_add_string(&b, NULL, t);
  		t = strtok(NULL, " ");
 diff --git a/service/service.h b/service/service.h
-index c3f2964..7be0a8a 100644
+index d4f0a83..b0297ac 100644
 --- a/service/service.h
 +++ b/service/service.h
 @@ -49,7 +49,7 @@ struct service {
@@ -45,9 +45,9 @@ index c3f2964..7be0a8a 100644
  void service_validate_dump_all(struct blob_buf *b, char *p, char *s);
 -int service_start_early(char *name, char *cmdline);
 +int service_start_early(const char *name, const char *cmdline);
+ void service_stopped(struct service *s);
  void service_validate_del(struct service *s);
  void service_event(const char *type, const char *service, const char *instance);
- 
 diff --git a/trace/trace.c b/trace/trace.c
 index fdffaba..a7dd9e3 100644
 --- a/trace/trace.c
