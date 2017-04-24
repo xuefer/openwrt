@@ -150,6 +150,7 @@ define Host/Compile
 endef
 
 define Host/Install
+	$(call Host/Install/Default,install.libs)
 	$(INSTALL_BIN) $(HOST_BUILD_DIR)/progs/tic $(STAGING_DIR_HOST)/bin/tic
 endef
 
